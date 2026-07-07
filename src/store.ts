@@ -57,6 +57,38 @@ export const useCasinoStore = create<CasinoState>((set, get) => ({
       if (token) {
         await get().loadUser();
       }
+      
+      // If no valid token or user profile after loading, auto-authenticate a guest user
+      if (!get().token || !get().user) {
+        const guestEmail = 'guest@luckyverse.com';
+        const guestUsername = 'LuckyGuest';
+        const guestAvatar = 'Crown';
+        
+        // Try to log in
+        const loginRes = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: guestEmail }),
+        });
+        
+        let data = await loginRes.json();
+        if (!loginRes.ok) {
+          // If login fails (user does not exist), register guest user
+          const signupRes = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: guestEmail, username: guestUsername, avatar: guestAvatar }),
+          });
+          data = await signupRes.json();
+        }
+        
+        if (data.token) {
+          localStorage.setItem('lucky_token', data.token);
+          set({ user: data.user, token: data.token });
+          get().addNotification('Welcome Guest!', `Logged in as ${data.user.username}. Happy playing!`, 'success');
+        }
+      }
+
       await get().fetchGames();
     } catch (err: any) {
       set({ error: err.message || 'Initialization failed' });

@@ -8,7 +8,6 @@ import { useCasinoStore } from './store';
 import { sounds } from './utils/audio';
 
 // Visual Components
-import AuthView from './components/AuthView';
 import LobbyView from './components/LobbyView';
 import SlotsGame from './components/games/SlotsGame';
 import RouletteGame from './components/games/RouletteGame';
@@ -28,7 +27,7 @@ import {
 
 export default function App() {
   const { 
-    user, token, init, logout, soundEnabled, toggleSound, 
+    user, token, init, soundEnabled, toggleSound, 
     notifications, clearNotification, loading, error, setError 
   } = useCasinoStore();
 
@@ -105,12 +104,20 @@ export default function App() {
     }
   };
 
-  // If not logged in, show authentication splash screen
+  // If not logged in or loading, show a premium entering transition splash screen while auto-login resolves
   if (!token || !user) {
     return (
       <div className="min-h-screen bg-zinc-950 text-white bg-dark-gradient flex flex-col justify-between py-6">
-        <main className="flex-1 flex items-center justify-center">
-          <AuthView />
+        <main className="flex-1 flex flex-col items-center justify-center text-center space-y-4 px-4">
+          <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-gold-gradient text-black shadow-lg shadow-amber-500/20 mb-2 animate-bounce">
+            <Trophy className="w-8 h-8 fill-black" />
+          </div>
+          <h1 className="text-3xl font-display font-extrabold tracking-wider text-gold-gradient uppercase animate-pulse">
+            LUCKYVERSE CASINO
+          </h1>
+          <p className="text-xs text-zinc-400 uppercase tracking-widest font-mono">
+            Entering VIP Arena...
+          </p>
         </main>
         <footer className="text-center text-zinc-600 text-[10px] font-mono uppercase tracking-widest px-4 mt-6">
           LuckyVerse Entertainment Platform • Strictly Play Coins • No real cash risks
@@ -240,15 +247,6 @@ export default function App() {
               </div>
             )}
           </div>
-
-          {/* Logout trigger */}
-          <button
-            onClick={logout}
-            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-red-400 transition cursor-pointer"
-            title="Sign Out"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
 
           {/* Mobile drawer toggle */}
           <button
