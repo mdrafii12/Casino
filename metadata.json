@@ -1,0 +1,8 @@
+{
+  "name": "LuckyVerse Casino",
+  "description": "A premium luxury virtual casino entertainment platform featuring slots, roulette, blackjack, dice, coin flip, wheel spin, and scratch cards. Strictly play coins with no real money.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
